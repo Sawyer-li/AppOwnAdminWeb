@@ -29,6 +29,11 @@ export default defineConfig({
       path: '/table',
       component: './Table',
     },
+    {
+      name: '语音识别',
+      path: '/speech',
+      component: './Speech',
+    },
   ],
   npmClient: 'npm',
 });
