@@ -34,6 +34,11 @@ export default defineConfig({
       path: '/speech',
       component: './Speech',
     },
+    {
+      name: '小狐狸授权',
+      path: '/metamask',
+      component: './Metamask',  
+    }
   ],
   npmClient: 'npm',
 });
