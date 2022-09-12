@@ -1,5 +1,7 @@
 
 import axios from 'axios';
+import { INftItem } from './index.d';
+const MetaBackHost = "http://127.0.0.1:3000"
 
 export const getAccountNftByEthScan = (address: string) => {
   return axios.get('https://api.etherscan.io/api', {
@@ -24,4 +26,25 @@ export const getAccountNftByMoralis= (address: string) => {
         chain: "eth",
       }
   }).then((res) => res.data)
+}
+
+/** 获取账户所有nft */
+export const getAccountNft1ByMoralis= (address: string) => {
+  return axios.get(`https://deep-index.moralis.io/api/v2/${address}/nft`, {
+      headers: {
+        Accept: 'application/json', 
+        'X-API-Key': 'nRh0Ps4in5X8rmSQPb9sn6txS8SW0450aIHTEnuGQDvcrHzinlQpo2Fl2s0Chcns'
+      },
+      params: {
+        chain: "eth",
+        format: "decimal"
+      }
+  }).then((res) => res.data)
+}
+
+export const addSelectNft = (params: {
+  publicKey: string;
+  nftItem: INftItem;
+}) => {
+  return axios.post(MetaBackHost + '/submitAccount', params)
 }
