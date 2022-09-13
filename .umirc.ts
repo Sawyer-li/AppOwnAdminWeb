@@ -9,6 +9,7 @@ export default defineConfig({
   layout: {
     title: '个人元宇宙后台',
   },
+  history: {type: 'hash'},
   routes: [
     {
       path: '/',
