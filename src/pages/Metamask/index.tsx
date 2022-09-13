@@ -1,8 +1,8 @@
 import styles from './index.less';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button, Steps, Tabs, Card, Descriptions, Row, Col, Result } from 'antd';
 import { PageContainer } from '@ant-design/pro-components';
-import { getAccountNft1ByMoralis, addSelectNft } from './service';
+import { getAccountNft1ByMoralis, addSelectNft, getAccount } from './service';
 import { INftItem } from './index.d';
 
 
@@ -27,37 +27,41 @@ const NftCards = (props: { personNft: INftItem[], onClick: (item: INftItem)=> vo
   }
 </Row>;
 
-/** 成果结果组件 */
-const ResultSuccess = () => <Result
-  status="success"
-  title="成功选择设置你的NFT"
-  extra={[
-    <Button type="primary" key="console">
-      重新设置
-    </Button>
-  ]}
-/>
 
+export const handleImageUrl = (originUrl: string): string => {
+  if(originUrl.indexOf('http') !== -1){
+    return originUrl;
+  }else{
+    return "https://ipfs.io/ipfs/"+originUrl.slice(7)
+  }
+} 
 
 export default function Page() {
   const [publicKey, setPublicKey] = useState(''); 
   const [step, setStep] = useState(0); 
-  const [personNft, setPersonNft] = useState<INftItem[]>([])
+  const [personNft, setPersonNft] = useState<INftItem[]>([]);
+  const [isRegister, setIsRegister] = useState<boolean>(false);
   const connectMeta = async () =>{
       const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
       const account = accounts[0];
-      setPublicKey(account);
-      setStep(1);
-      getAccountNft1ByMoralis('0x5BbdF8bD5f80b8B6639e4F1BFe16B8D136990fF0')
-        .then((res)=>{
-          res.result.forEach((item) => {
-            if(item.metadata){
-              item.metadata = JSON.parse(item.metadata)
-              item.image = "https://ipfs.io/ipfs/"+item.metadata.image.slice(7)
-            }
+      const isRegister =  await getAccount(account)
+      if(!isRegister){
+        setPublicKey(account);
+        setStep(1);
+        getAccountNft1ByMoralis('0x5BbdF8bD5f80b8B6639e4F1BFe16B8D136990fF0')
+          .then((res)=>{
+            res.result.forEach((item) => {
+              if(item.metadata){
+                item.metadata = JSON.parse(item.metadata)
+                item.image = handleImageUrl(item.metadata.image);
+              }
+            })
+            setPersonNft(res.result);
           })
-          setPersonNft(res.result);
-        })
+      } else {
+        setIsRegister(true);
+        setStep(2);
+      }
   }
   const tabChanged = (key: string) => {
     console.log(key)
@@ -82,7 +86,10 @@ export default function Page() {
       <div className={styles.stepBody}>
         { step === 0 && <Button type='primary' onClick={connectMeta}>启动小狐狸</Button>}
         { step === 1 && <NftCards personNft={personNft} onClick={handleSelectNft} /> }
-        { step === 2 && <ResultSuccess /> }
+        { step === 2 && <Result
+          status="success"
+          title={ isRegister ? "你以注册上传过无需重复上传" : "成功设置你的NFT"}
+        /> }
         { step === 3 && <div>
             你的账户为： {publicKey}
             <Tabs

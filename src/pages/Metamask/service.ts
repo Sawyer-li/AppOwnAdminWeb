@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import { INftItem } from './index.d';
-const MetaBackHost = "http://127.0.0.1:3000"
+const MetaBackHost = "http://47.100.7.228:3000"
 
 export const getAccountNftByEthScan = (address: string) => {
   return axios.get('https://api.etherscan.io/api', {
@@ -47,4 +47,9 @@ export const addSelectNft = (params: {
   nftItem: INftItem;
 }) => {
   return axios.post(MetaBackHost + '/submitAccount', params)
+}
+export const getAccount = (publicKey: string): Promise<boolean> => {
+  return axios.get(MetaBackHost + '/getAccount',{ params: {
+    publicKey
+  }}).then((res) => res.data)
 }
