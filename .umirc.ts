@@ -35,10 +35,10 @@ export default defineConfig({
       component: './Speech',
     },
     {
-      name: '小狐狸授权',
+      name: 'NFT选择',
       path: '/metamask',
-      component: './Metamask',  
-    }
+      component: './Metamask',
+    },
   ],
   npmClient: 'npm',
 });
