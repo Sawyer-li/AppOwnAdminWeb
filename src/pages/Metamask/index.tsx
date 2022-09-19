@@ -15,14 +15,18 @@ import styles from './index.less';
 import { addSelectNft, getAccount, getAccountNft1ByMoralis } from './service';
 
 const { Step } = Steps;
-// const nftArr = ['bayc', 'mayc', 'clonex', 'moonbird', 'azuki'];
+
+const nftArr = ['bayc', 'mayc', 'clonex', 'moonbird', 'azuki', 'Meebits'];
+
 const filterNftTokenAddress = [
-  'bayc',
+  '0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d',
   '0xae63b956f7c77fba04e2eea59f7b8b2280f55431',
   '0x49cf6f5d44e70224e2e23fdcdd2c053f30ada28b',
   '0x23581767a106ae21c074b2276d25e5c3e136a68b',
   '0xed5af388653567af2f388e6224dc7c4b3241c544',
+  '0x7bd29408f11d2bfc23c34f18275bbf23bb716bc7',
 ];
+
 const NftCards = (props: {
   personNft: INftItem[];
   onClick: (item: INftItem) => void;
@@ -50,7 +54,7 @@ const NftCards = (props: {
   ) : (
     <h2 style={{ color: 'red' }}> 未未在你的账户中找到以上NFT</h2>
   );
-
+/** 拼接ipfs链接 */
 export const handleImageUrl = (originUrl: string): string => {
   if (!originUrl) {
     return '';
@@ -66,6 +70,7 @@ export default function Page() {
   const [step, setStep] = useState(0);
   const [personNft, setPersonNft] = useState<INftItem[]>([]);
   const [isRegister, setIsRegister] = useState<boolean>(false);
+
   const connectMeta = async () => {
     const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
     let account = accounts[0];
@@ -106,10 +111,7 @@ export default function Page() {
     <PageContainer title={`你的公钥：${publicKey}`}>
       <Steps current={step}>
         <Step title="授权" description="点击启动metamask，进行授权" />
-        <Step
-          title="选择一个nft"
-          description="仅显示bayc、mayc、 clonex、 moonbird、 azuki"
-        />
+        <Step title="选择一个nft" description={'仅显示' + nftArr.join('、')} />
         <Step title="完成" description="设置成功" />
       </Steps>
       <div className={styles.stepBody}>
